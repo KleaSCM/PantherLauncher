@@ -14,7 +14,7 @@ const GameList = ({ games, onSelect, onWebClick }) => {
 
     return (
         <div className="game-list">
-            <div className="game-icons grid">
+            <div className={`game-icons ${games.length > 0 && games[0].url ? 'grid' : ''}`}>
                 {games.map(game => (
                     <div key={game.name} onClick={() => handleClick(game)} className="game-icon-container">
                         <img src={game.icon} alt={game.name} className="game-icon" />
@@ -27,6 +27,11 @@ const GameList = ({ games, onSelect, onWebClick }) => {
 };
 
 export default GameList;
+
+
+
+
+
 
 
 

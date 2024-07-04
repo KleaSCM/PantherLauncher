@@ -1,32 +1,43 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
-const { getSteamGames, getBlizzardGames } = require('./src/gameScanner');
+const { exec } = require('child_process');
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'src', 'preload.js'),
-            nodeIntegration: true
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: false,
         }
     });
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
 }
 
-app.on('ready', createWindow);
+app.whenReady().then(() => {
+    createWindow();
 
-ipcMain.handle('get-steam-games', async () => {
-    return getSteamGames();
-});
-
-ipcMain.handle('get-blizzard-games', async () => {
-    return getBlizzardGames();
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
+});
+
+ipcMain.on('launch-game', (event, gamePath) => {
+    exec(gamePath, (err) => {
+        if (err) {
+            console.error('Failed to launch game:', err);
+            return;
+        }
+        console.log('Game launched successfully');
+    });
 });

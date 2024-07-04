@@ -1,12 +1,11 @@
 import React from 'react';
 import { shell } from 'electron';
 
-const GameList = ({ games, onSelect }) => {
+const GameList = ({ games, onSelect, onWebClick }) => {
     const handleClick = (game) => {
         if (game.url) {
-            shell.openExternal(game.url); // This will open the URL in the default browser
+            onWebClick(game.url);
         } else if (game.path && game.name === 'Spotify') {
-            // Logic to open Spotify app
             shell.openExternal('spotify:');
         } else {
             onSelect(game.name);
@@ -15,7 +14,7 @@ const GameList = ({ games, onSelect }) => {
 
     return (
         <div className="game-list">
-            <div className={`game-icons ${games.length > 0 && games[0].url ? 'grid' : ''}`}>
+            <div className="game-icons grid">
                 {games.map(game => (
                     <div key={game.name} onClick={() => handleClick(game)} className="game-icon-container">
                         <img src={game.icon} alt={game.name} className="game-icon" />
