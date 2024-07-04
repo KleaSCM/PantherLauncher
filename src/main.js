@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
 
@@ -41,3 +41,4 @@ ipcMain.on('launch-game', (event, gamePath) => {
         console.log('Game launched successfully');
     });
 });
+

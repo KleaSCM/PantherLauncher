@@ -9,10 +9,14 @@ const GameDetails = ({ game, onLaunch }) => {
         <div className="game-details">
             <h2>{game.name}</h2>
             <p>{game.description}</p>
-            <button onClick={() => onLaunch(game.path)}>Launch Game</button>
+            {game.path && (
+                <button onClick={() => onLaunch(game.path)}>Launch Game</button>
+            )}
         </div>
     );
 };
 
 export default GameDetails;
+
+
 

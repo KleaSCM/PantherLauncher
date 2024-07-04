@@ -1,3 +1,9 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -7,6 +13,7 @@ body {
 
 h1, h2 {
     color: #ecf0f1;
+    cursor: pointer;
 }
 
 .app-header {
@@ -17,73 +24,52 @@ h1, h2 {
 
 .container {
     display: flex;
-    height: calc(100vh - 60px); /* Adjust height to account for header */
+    flex-wrap: wrap;
+    padding: 20px;
 }
 
 .category-list {
-    width: 200px;
+    flex: 1 1 300px;
+    min-width: 300px;
     border-right: 1px solid #7f8c8d;
     padding: 20px;
     overflow-y: auto;
 }
 
-    .category-list ul {
-        list-style: none;
-        padding: 0;
-    }
-
-.category-item {
-    padding: 10px;
+.category-title {
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
 }
 
-    .category-item:hover {
-        background-color: #34495e;
-        transform: scale(1.05);
+    .category-title:hover {
+        color: #e74c3c;
     }
 
-.game-list {
-    flex-grow: 1;
+.details-and-browser {
+    flex: 3 1 400px;
     padding: 20px;
     overflow-y: auto;
-}
-
-.game-icons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-    .game-icons.horizontal {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-    }
-
-.game-icon-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-    .game-icon-container:hover {
-        transform: scale(1.1);
-    }
-
-.game-icon {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 10px;
 }
 
 .game-details {
-    flex-grow: 1;
+    flex: 1;
     padding: 20px;
     overflow-y: auto;
 }
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    li:hover {
+        background-color: #34495e;
+    }
 
 button {
     background-color: #e74c3c;
@@ -97,3 +83,40 @@ button {
     button:hover {
         background-color: #c0392b;
     }
+
+.game-icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game-icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    margin: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.game-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.game-icons.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.game-icon-container:hover {
+    transform: scale(1.1);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}

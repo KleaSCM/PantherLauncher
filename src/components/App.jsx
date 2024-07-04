@@ -1,34 +1,56 @@
 import React, { useState } from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import GameList from './GameList';
 import GameDetails from './GameDetails';
-import CategoryList from './CategoryList';
 
 const App = () => {
     const [selectedGame, setSelectedGame] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState('Games');
+    const [expandedCategories, setExpandedCategories] = useState({});
 
     const launchGame = (gamePath) => {
         ipcRenderer.send('launch-game', gamePath);
     };
 
-    const data = {
-        'Games': [
-            { name: 'Overwatch 2', path: 'path/to/Overwatch2.exe', description: 'Description for Overwatch 2', icon: 'icons/Overwatch2.png' },
-            { name: 'Battle.net', path: 'path/to/BattleNet.exe', description: 'Description for Battle.net', icon: 'icons/BattleNet.png' },
-            { name: 'World of Warcraft', path: 'path/to/WoW.exe', description: 'Description for World of Warcraft', icon: 'icons/WoW.png' },
-        ],
-        'Music': [
-            { name: 'Spotify', path: 'path/to/spotify.exe', description: 'Description for Spotify', icon: 'icons/spotify.png' },
-        ],
-        'Web': [
-            { name: 'GitHub', url: 'https://github.com', description: 'GitHub', icon: 'icons/github.png' },
-            { name: 'LinkedIn', url: 'https://linkedin.com', description: 'LinkedIn', icon: 'icons/linkedin.png' },
-            { name: 'CurseForge', url: 'https://curseforge.com', description: 'CurseForge', icon: 'icons/curseforge.jpg' },
-            { name: 'YouTube', url: 'https://youtube.com', description: 'YouTube', icon: 'icons/youtube.png' },
-            { name: 'Google', url: 'https://google.com', description: 'Google', icon: 'icons/google.png' },
-            { name: 'ChatGPT', url: 'https://chat.openai.com', description: 'ChatGPT', icon: 'icons/chatgpt.png' },
-        ],
+    const games = [
+        { name: 'Overwatch 2', path: 'path/to/Overwatch2.exe', description: 'Overwatch 2 game', icon: '../public/icons/Overwatch2.png' },
+        { name: 'BattleNet', path: 'path/to/BattleNet.exe', description: 'Battle.net launcher', icon: '../public/icons/BattleNet.png' },
+        { name: 'WoW', path: 'path/to/WoW.exe', description: 'World of Warcraft', icon: '../public/icons/WoW.png' },
+    ];
+
+    const music = [
+        { name: 'Spotify', path: 'spotify:', description: 'Spotify music streaming', icon: '../public/icons/spotify.png' }
+    ];
+
+    const webApps = [
+        { name: 'YouTube', url: 'https://www.youtube.com', description: 'YouTube streaming platform', icon: '../public/icons/youtube.png' },
+        { name: 'ChatGPT', url: 'https://chat.openai.com', description: 'ChatGPT by OpenAI', icon: '../public/icons/chatgpt.png' },
+        { name: 'GitHub', url: 'https://github.com', description: 'GitHub code hosting platform', icon: '../public/icons/github.png' },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com', description: 'LinkedIn professional networking', icon: '../public/icons/linkedin.png' },
+        { name: 'CurseForge', url: 'https://www.curseforge.com', description: 'CurseForge modding platform', icon: '../public/icons/curseforge.jpg' },
+        { name: 'Google', url: 'https://www.google.com', description: 'Google search engine', icon: '../public/icons/google.png' }
+    ];
+
+    const software = [
+        { name: 'Visual Studio', path: 'path/to/VisualStudio.exe', description: 'Visual Studio IDE', icon: '../public/icons/Visual_Studio_Icon_2022.png' },
+        { name: 'VS Code', path: 'path/to/VSCode.exe', description: 'Visual Studio Code editor', icon: '../public/icons/VSCODE.png' },
+    ];
+
+    const categories = [
+        { name: 'Games', items: games },
+        { name: 'Music', items: music },
+        { name: 'Web Applications', items: webApps },
+        { name: 'Software', items: software },
+    ];
+
+    const toggleCategory = (category) => {
+        setExpandedCategories(prevState => ({
+            ...prevState,
+            [category]: !prevState[category]
+        }));
+    };
+
+    const handleWebClick = (url) => {
+        shell.openExternal(url);
     };
 
     return (
@@ -37,9 +59,19 @@ const App = () => {
                 <h1>Welcome to PantherLauncher</h1>
             </header>
             <div className="container">
-                <CategoryList categories={Object.keys(data)} onSelect={setSelectedCategory} />
-                <GameList games={data[selectedCategory]} onSelect={setSelectedGame} />
-                <GameDetails game={data[selectedCategory].find(game => game.name === selectedGame)} onLaunch={launchGame} />
+                <div className="category-list">
+                    {categories.map(category => (
+                        <div key={category.name}>
+                            <h2 onClick={() => toggleCategory(category.name)} className="category-title">{category.name}</h2>
+                            {expandedCategories[category.name] && (
+                                <GameList games={category.items} onSelect={setSelectedGame} onWebClick={handleWebClick} />
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div className="details-and-browser">
+                    <GameDetails game={[...games, ...music, ...webApps, ...software].find(game => game.name === selectedGame)} onLaunch={launchGame} />
+                </div>
             </div>
         </div>
     );

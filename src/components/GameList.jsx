@@ -1,12 +1,22 @@
 import React from 'react';
+import { shell } from 'electron';
 
-const GameList = ({ games, onSelect }) => {
+const GameList = ({ games, onSelect, onWebClick }) => {
+    const handleClick = (game) => {
+        if (game.url) {
+            onWebClick(game.url); // Open the URL in the default browser
+        } else if (game.path && game.name === 'Spotify') {
+            shell.openExternal('spotify:');
+        } else {
+            onSelect(game.name);
+        }
+    };
+
     return (
         <div className="game-list">
-            <h2>{games.length > 0 && games[0].url ? 'Web Applications' : 'Games'}</h2>
-            <div className={`game-icons ${games.length > 0 && games[0].url ? 'horizontal' : ''}`}>
+            <div className={`game-icons ${games.length > 0 && games[0].url ? 'grid' : ''}`}>
                 {games.map(game => (
-                    <div key={game.name} onClick={() => onSelect(game.name)} className="game-icon-container">
+                    <div key={game.name} onClick={() => handleClick(game)} className="game-icon-container">
                         <img src={game.icon} alt={game.name} className="game-icon" />
                         <span>{game.name}</span>
                     </div>
@@ -17,3 +27,11 @@ const GameList = ({ games, onSelect }) => {
 };
 
 export default GameList;
+
+
+
+
+
+
+
+
