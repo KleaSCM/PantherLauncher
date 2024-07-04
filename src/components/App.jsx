@@ -6,6 +6,7 @@ import GameDetails from './GameDetails';
 const App = () => {
     const [selectedGame, setSelectedGame] = useState(null);
     const [expandedCategories, setExpandedCategories] = useState({});
+    const [searchTerm, setSearchTerm] = useState('');
 
     const launchGame = (gamePath) => {
         ipcRenderer.send('launch-game', gamePath);
@@ -31,8 +32,8 @@ const App = () => {
     ];
 
     const software = [
-        { name: 'Visual Studio', path: 'path/to/VisualStudio.exe', description: 'Visual Studio IDE', icon: '../public/icons/Visual_Studio_Icon_2022.png' },
-        { name: 'VS Code', path: 'path/to/VSCode.exe', description: 'Visual Studio Code editor', icon: '../public/icons/VSCODE.png' },
+        { name: 'Visual Studio', path: 'path/to/VisualStudio.exe', description: 'Visual Studio IDE', icon: '../public/icons/Visual_Studio_Icon_2022.svg' },
+        { name: 'VS Code', path: 'path/to/VSCode.exe', description: 'Visual Studio Code editor', icon: '../public/icons/Visual_Studio_Code_1.35_icon.svg' },
     ];
 
     const categories = [
@@ -53,6 +54,11 @@ const App = () => {
         shell.openExternal(url);
     };
 
+    const filteredCategories = categories.map(category => ({
+        ...category,
+        items: category.items.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    }));
+
     return (
         <div className="app">
             <header className="app-header">
@@ -60,7 +66,14 @@ const App = () => {
             </header>
             <div className="container">
                 <div className="category-list">
-                    {categories.map(category => (
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="search-input"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {filteredCategories.map(category => (
                         <div key={category.name}>
                             <h2 onClick={() => toggleCategory(category.name)} className="category-title">{category.name}</h2>
                             {expandedCategories[category.name] && (

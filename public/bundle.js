@@ -43,6 +43,10 @@ var App = function App() {
     _useState4 = _slicedToArray(_useState3, 2),
     expandedCategories = _useState4[0],
     setExpandedCategories = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    searchTerm = _useState6[0],
+    setSearchTerm = _useState6[1];
   var launchGame = function launchGame(gamePath) {
     electron__WEBPACK_IMPORTED_MODULE_1__.ipcRenderer.send('launch-game', gamePath);
   };
@@ -103,12 +107,12 @@ var App = function App() {
     name: 'Visual Studio',
     path: 'path/to/VisualStudio.exe',
     description: 'Visual Studio IDE',
-    icon: '../public/icons/Visual_Studio_Icon_2022.png'
+    icon: '../public/icons/Visual_Studio_Icon_2022.svg'
   }, {
     name: 'VS Code',
     path: 'path/to/VSCode.exe',
     description: 'Visual Studio Code editor',
-    icon: '../public/icons/VSCODE.png'
+    icon: '../public/icons/Visual_Studio_Code_1.35_icon.svg'
   }];
   var categories = [{
     name: 'Games',
@@ -131,6 +135,13 @@ var App = function App() {
   var handleWebClick = function handleWebClick(url) {
     electron__WEBPACK_IMPORTED_MODULE_1__.shell.openExternal(url);
   };
+  var filteredCategories = categories.map(function (category) {
+    return _objectSpread(_objectSpread({}, category), {}, {
+      items: category.items.filter(function (item) {
+        return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+    });
+  });
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "app"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("header", {
@@ -139,7 +150,15 @@ var App = function App() {
     className: "container"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "category-list"
-  }, categories.map(function (category) {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Search...",
+    className: "search-input",
+    value: searchTerm,
+    onChange: function onChange(e) {
+      return setSearchTerm(e.target.value);
+    }
+  }), filteredCategories.map(function (category) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       key: category.name
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
@@ -184,15 +203,16 @@ var GameDetails = function GameDetails(_ref) {
   if (!game) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "game-details"
-    }, "Select a game to see details");
+    }, "Select a game or application to see details");
   }
+  var isSoftware = game.path && (game.name === 'Visual Studio' || game.name === 'VS Code');
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "game-details"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", null, game.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, game.description), game.path && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: function onClick() {
       return onLaunch(game.path);
     }
-  }, "Launch Game"));
+  }, isSoftware ? 'Run Software' : 'Launch Game'));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GameDetails);
 
@@ -220,7 +240,7 @@ var GameList = function GameList(_ref) {
     onWebClick = _ref.onWebClick;
   var handleClick = function handleClick(game) {
     if (game.url) {
-      onWebClick(game.url); // Open the URL in the default browser
+      onWebClick(game.url);
     } else if (game.path && game.name === 'Spotify') {
       electron__WEBPACK_IMPORTED_MODULE_1__.shell.openExternal('spotify:');
     } else {
@@ -230,7 +250,7 @@ var GameList = function GameList(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "game-list"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "game-icons ".concat(games.length > 0 && games[0].url ? 'grid' : '')
+    className: "game-icons grid"
   }, games.map(function (game) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       key: game.name,

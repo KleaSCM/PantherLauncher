@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow: hidden; /* Prevent body from scrolling */
 }
 
 body {
@@ -24,20 +25,32 @@ h1, h2 {
 
 .container {
     display: flex;
-    flex-wrap: wrap;
     padding: 20px;
+    height: calc(100vh - 100px); /* Adjust for header height */
+    overflow: hidden;
+}
+
+.search-input {
+    width: 90%;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .category-list {
-    flex: 1 1 300px;
+    flex: 1;
     min-width: 300px;
     border-right: 1px solid #7f8c8d;
     padding: 20px;
     overflow-y: auto;
+    height: 100%;
 }
 
 .category-title {
     cursor: pointer;
+    margin-bottom: 10px;
 }
 
     .category-title:hover {
@@ -45,15 +58,16 @@ h1, h2 {
     }
 
 .details-and-browser {
-    flex: 3 1 400px;
+    flex: 3;
     padding: 20px;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .game-details {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+    margin-bottom: 20px;
+    flex-shrink: 0; /* Prevent game details from shrinking */
 }
 
 ul {
@@ -96,7 +110,10 @@ button {
     width: 80px;
     margin: 10px;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background-color 0.3s;
+    background-color: #34495e;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .game-icon {
@@ -113,10 +130,5 @@ button {
 
 .game-icon-container:hover {
     transform: scale(1.1);
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    background-color: #c0392b;
 }
